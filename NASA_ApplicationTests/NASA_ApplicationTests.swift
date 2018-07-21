@@ -1,15 +1,15 @@
 //
-//  NASAImageApplicationTests.swift
-//  NASAImageApplicationTests
+//  NASA_ApplicationTests.swift
+//  NASA_ApplicationTests
 //
 //  Created by Christopher Vensand on 7/21/18.
 //  Copyright © 2018 Christopher Vensand. All rights reserved.
 //
 
 import XCTest
-@testable import NASAImageApplication
+@testable import NASA_Application
 
-class NASAImageApplicationTests: XCTestCase {
+class NASA_ApplicationTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
