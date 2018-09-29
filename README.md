@@ -1,2 +1,2 @@
 # NASA Image Application
-iOS Application to set NASA images as phone backgrounds
+iOS Application using REST API's to pull archived NASA images
