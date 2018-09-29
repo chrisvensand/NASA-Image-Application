@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD3215E71B400D6E3BB /* Extensions.swift */; };
+		A471DFD7215E722B00D6E3BB /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD6215E722B00D6E3BB /* ImageCell.swift */; };
+		A471DFDA215E835100D6E3BB /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD9215E835100D6E3BB /* MenuBar.swift */; };
 		A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B421039BAE00396E8F /* AppDelegate.swift */; };
 		A48127B721039BAE00396E8F /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B621039BAE00396E8F /* HomeController.swift */; };
 		A48127BA21039BAE00396E8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48127B821039BAE00396E8F /* Main.storyboard */; };
@@ -34,6 +37,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A471DFD3215E71B400D6E3BB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		A471DFD6215E722B00D6E3BB /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		A471DFD9215E835100D6E3BB /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 		A48127B121039BAE00396E8F /* NASA_Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NASA_Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48127B421039BAE00396E8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A48127B621039BAE00396E8F /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
@@ -74,6 +80,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A471DFD2215E719700D6E3BB /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A471DFD3215E71B400D6E3BB /* Extensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		A471DFD5215E720F00D6E3BB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A471DFD6215E722B00D6E3BB /* ImageCell.swift */,
+				A471DFD9215E835100D6E3BB /* MenuBar.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A471DFD8215E732D00D6E3BB /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A48127B621039BAE00396E8F /* HomeController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		A48127A821039BAE00396E8F = {
 			isa = PBXGroup;
 			children = (
@@ -97,8 +128,10 @@
 		A48127B321039BAE00396E8F /* NASA_Application */ = {
 			isa = PBXGroup;
 			children = (
+				A471DFD5215E720F00D6E3BB /* View */,
+				A471DFD8215E732D00D6E3BB /* Controller */,
+				A471DFD2215E719700D6E3BB /* Helpers */,
 				A48127B421039BAE00396E8F /* AppDelegate.swift */,
-				A48127B621039BAE00396E8F /* HomeController.swift */,
 				A48127B821039BAE00396E8F /* Main.storyboard */,
 				A48127BB21039BAF00396E8F /* Assets.xcassets */,
 				A48127BD21039BAF00396E8F /* LaunchScreen.storyboard */,
@@ -193,13 +226,16 @@
 				TargetAttributes = {
 					A48127B021039BAE00396E8F = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 					A48127C421039BAF00396E8F = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = A48127B021039BAE00396E8F;
 					};
 					A48127CF21039BAF00396E8F = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 						TestTargetID = A48127B021039BAE00396E8F;
 					};
 				};
@@ -257,7 +293,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A48127B721039BAE00396E8F /* HomeController.swift in Sources */,
+				A471DFD7215E722B00D6E3BB /* ImageCell.swift in Sources */,
+				A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */,
 				A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */,
+				A471DFDA215E835100D6E3BB /* MenuBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +478,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-Application";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -457,7 +496,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-Application";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -476,7 +515,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-ApplicationTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NASA_Application.app/NASA_Application";
 			};
@@ -496,7 +535,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-ApplicationTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NASA_Application.app/NASA_Application";
 			};
@@ -515,7 +554,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-ApplicationUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = NASA_Application;
 			};
@@ -534,7 +573,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ChristopherVensand.NASA-ApplicationUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = NASA_Application;
 			};
