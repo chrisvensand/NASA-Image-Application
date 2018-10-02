@@ -17,6 +17,12 @@
 		A48127BF21039BAF00396E8F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48127BD21039BAF00396E8F /* LaunchScreen.storyboard */; };
 		A48127CA21039BAF00396E8F /* NASA_ApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127C921039BAF00396E8F /* NASA_ApplicationTests.swift */; };
 		A48127D521039BAF00396E8F /* NASA_ApplicationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127D421039BAF00396E8F /* NASA_ApplicationUITests.swift */; };
+		A4BC2BD62162E46A00B73254 /* SearchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BD52162E46A00B73254 /* SearchData.swift */; };
+		A4BC2BDB2162E99700B73254 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BC2BD92162E99700B73254 /* RxCocoa.framework */; };
+		A4BC2BDC2162E99700B73254 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BC2BDA2162E99700B73254 /* RxSwift.framework */; };
+		A4BC2BE12162EDF100B73254 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE02162EDF100B73254 /* APIRequest.swift */; };
+		A4BC2BE32162EF0100B73254 /* SearchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE22162EF0100B73254 /* SearchRequest.swift */; };
+		A4BC2BE52162EF5A00B73254 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE42162EF5A00B73254 /* APIClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +59,12 @@
 		A48127D021039BAF00396E8F /* NASA_ApplicationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NASA_ApplicationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48127D421039BAF00396E8F /* NASA_ApplicationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASA_ApplicationUITests.swift; sourceTree = "<group>"; };
 		A48127D621039BAF00396E8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A4BC2BD52162E46A00B73254 /* SearchData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchData.swift; sourceTree = "<group>"; };
+		A4BC2BD92162E99700B73254 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
+		A4BC2BDA2162E99700B73254 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
+		A4BC2BE02162EDF100B73254 /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
+		A4BC2BE22162EF0100B73254 /* SearchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRequest.swift; sourceTree = "<group>"; };
+		A4BC2BE42162EF5A00B73254 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +72,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4BC2BDB2162E99700B73254 /* RxCocoa.framework in Frameworks */,
+				A4BC2BDC2162E99700B73254 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +126,7 @@
 				A48127C821039BAF00396E8F /* NASA_ApplicationTests */,
 				A48127D321039BAF00396E8F /* NASA_ApplicationUITests */,
 				A48127B221039BAE00396E8F /* Products */,
+				A4BC2BD82162E99600B73254 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,6 +143,8 @@
 		A48127B321039BAE00396E8F /* NASA_Application */ = {
 			isa = PBXGroup;
 			children = (
+				A4BC2BDF2162EDDB00B73254 /* Protocol */,
+				A4BC2BD42162E45500B73254 /* Model */,
 				A471DFD5215E720F00D6E3BB /* View */,
 				A471DFD8215E732D00D6E3BB /* Controller */,
 				A471DFD2215E719700D6E3BB /* Helpers */,
@@ -156,6 +173,33 @@
 				A48127D621039BAF00396E8F /* Info.plist */,
 			);
 			path = NASA_ApplicationUITests;
+			sourceTree = "<group>";
+		};
+		A4BC2BD42162E45500B73254 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A4BC2BD52162E46A00B73254 /* SearchData.swift */,
+				A4BC2BE22162EF0100B73254 /* SearchRequest.swift */,
+				A4BC2BE42162EF5A00B73254 /* APIClient.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		A4BC2BD82162E99600B73254 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A4BC2BD92162E99700B73254 /* RxCocoa.framework */,
+				A4BC2BDA2162E99700B73254 /* RxSwift.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A4BC2BDF2162EDDB00B73254 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				A4BC2BE02162EDF100B73254 /* APIRequest.swift */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -293,10 +337,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				A48127B721039BAE00396E8F /* HomeController.swift in Sources */,
+				A4BC2BE12162EDF100B73254 /* APIRequest.swift in Sources */,
+				A4BC2BD62162E46A00B73254 /* SearchData.swift in Sources */,
 				A471DFD7215E722B00D6E3BB /* ImageCell.swift in Sources */,
 				A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */,
+				A4BC2BE32162EF0100B73254 /* SearchRequest.swift in Sources */,
 				A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */,
 				A471DFDA215E835100D6E3BB /* MenuBar.swift in Sources */,
+				A4BC2BE52162EF5A00B73254 /* APIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +519,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NVM23D5H22;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NASA_Application/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -489,6 +541,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NVM23D5H22;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = NASA_Application/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

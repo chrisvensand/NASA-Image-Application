@@ -14,9 +14,7 @@ class BaseCell: UICollectionViewCell {
         setupViews()
     }
     
-    func setupViews() {
-    
-    }
+    func setupViews() {}
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -37,19 +35,11 @@ final class ImageCell: BaseCell {
         return imageView
     }()
     
-    let separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(red: 230/255, green: 230/255, blue: 230/255, alpha: 1)
-        return view
-    }()
-    
     override func setupViews() {
         addSubview(thumbnailImageView)
-        addSubview(separatorView)
         
         addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: thumbnailImageView)
-        addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(1)]|", views: thumbnailImageView, separatorView)
-        addConstraintsWithFormat(format: "H:|[v0]|", views: separatorView)
+        addConstraintsWithFormat(format: "V:|-16-[v0]-16-|", views: thumbnailImageView)
     }
     
     required init?(coder aDecoder: NSCoder) {
