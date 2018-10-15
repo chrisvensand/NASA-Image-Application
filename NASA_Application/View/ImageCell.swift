@@ -29,7 +29,6 @@ final class ImageCell: BaseCell {
     
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor.nasaRed()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView

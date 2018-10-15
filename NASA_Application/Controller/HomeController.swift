@@ -15,9 +15,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     private let apiClient = APIClient()
     private let disposeBag = DisposeBag()
     
+    private var images = BehaviorRelay<[UIImage]>(value: [])
+    
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchBar.placeholder = "Search NASA's archive.."
+        searchController.searchBar.placeholder = "Search"
         return searchController
     }()
     
@@ -31,22 +33,45 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         loadSearchBar()
     }
     
+    
+    private func makeRequest(query: String) {
+        guard let url = URL(string: "https://images-assets.nasa.gov/image/PIA07081/PIA07081~thumb.jpg") else {
+            fatalError("die")
+        }
+        
+        guard let data = try? Data(contentsOf: url) else {
+            fatalError("no data")
+        }
+        
+        guard let image = UIImage(data: data) else {
+            fatalError("no img")
+        }
+        
+        var old = images.value
+        old.append(image)
+        images.accept(old)
+    }
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-//        showLoading() screen
-        searchController.searchBar.rx.text.orEmpty.asObservable()
-            .throttle(0.6, scheduler: MainScheduler.instance)
-            .map { $0.lowercased() }
-            .map { SearchRequest(name: $0) }
-            .flatMap { request -> Observable<[SearchData]> in
-                return self.apiClient.send(apiRequest: request)
-            }
-            .bind(to: tableView.rx.items(cellIdentifier: cellIdentifier)) { index, model, cell in
-                cell.textLabel?.text = model.name
-            }
+        images.asDriver()
+            .drive(onNext: { (imgs) in
+                print(imgs.count)
+                self.collectionView.reloadData()
+            })
             .disposed(by: disposeBag)
-
+        
+        searchController.searchBar.rx.text.orEmpty
+            .asDriver()
+            .throttle(0.3)
+            .drive(onNext: { query in
+                self.makeRequest(query: query)
+            })
+            .disposed(by: disposeBag)
+        
+        
     }
     
     let menuBar: MenuBar = {
@@ -63,9 +88,17 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     private func loadTitleLabel() {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: view.frame.height))
-        titleLabel.text = "NASA"
+        titleLabel.text = "NASA Images"
         titleLabel.textColor = UIColor.black
-        titleLabel.font = UIFont.systemFont(ofSize: 20)
+        guard let customFont = UIFont(name: "NasalizationRg-Regular", size: UIFont.labelFontSize) else {
+            fatalError("""
+        Failed to load the "NasalizationRg-Regular" font.
+        Make sure the font file is included in the project and the font name is spelled correctly.
+        """
+            )
+        }
+        titleLabel.font = UIFontMetrics.default.scaledFont(for: customFont)
+        titleLabel.adjustsFontForContentSizeCategory = true
         navigationItem.titleView = titleLabel
     }
     
@@ -82,9 +115,9 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     private func loadNavBarButtons() {
-        let searchImage = UIImage(named: "shining")?.withRenderingMode(.alwaysOriginal)
+        let searchImage = UIImage(named: "information")?.withRenderingMode(.alwaysOriginal)
         let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
-        let moreButton = UIBarButtonItem(image: UIImage(named: "shining")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
+        let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
         
         navigationController?.navigationBar.isTranslucent = false
         navigationItem.rightBarButtonItem = searchBarButtonItem
@@ -105,11 +138,15 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return images.value.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID", for: indexPath) as? ImageCell else {
+            fatalError("Cant get cell")
+        }
+        
+        cell.thumbnailImageView.image = images.value[indexPath.row]
         return cell
     }
     

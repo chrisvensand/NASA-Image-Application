@@ -10,6 +10,7 @@
 		A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD3215E71B400D6E3BB /* Extensions.swift */; };
 		A471DFD7215E722B00D6E3BB /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD6215E722B00D6E3BB /* ImageCell.swift */; };
 		A471DFDA215E835100D6E3BB /* MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD9215E835100D6E3BB /* MenuBar.swift */; };
+		A474C3D121743C63009E48CE /* nasalization-rg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A474C3D021743C63009E48CE /* nasalization-rg.ttf */; };
 		A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B421039BAE00396E8F /* AppDelegate.swift */; };
 		A48127B721039BAE00396E8F /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B621039BAE00396E8F /* HomeController.swift */; };
 		A48127BA21039BAE00396E8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48127B821039BAE00396E8F /* Main.storyboard */; };
@@ -18,8 +19,6 @@
 		A48127CA21039BAF00396E8F /* NASA_ApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127C921039BAF00396E8F /* NASA_ApplicationTests.swift */; };
 		A48127D521039BAF00396E8F /* NASA_ApplicationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127D421039BAF00396E8F /* NASA_ApplicationUITests.swift */; };
 		A4BC2BD62162E46A00B73254 /* SearchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BD52162E46A00B73254 /* SearchData.swift */; };
-		A4BC2BDB2162E99700B73254 /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BC2BD92162E99700B73254 /* RxCocoa.framework */; };
-		A4BC2BDC2162E99700B73254 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BC2BDA2162E99700B73254 /* RxSwift.framework */; };
 		A4BC2BE12162EDF100B73254 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE02162EDF100B73254 /* APIRequest.swift */; };
 		A4BC2BE32162EF0100B73254 /* SearchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE22162EF0100B73254 /* SearchRequest.swift */; };
 		A4BC2BE52162EF5A00B73254 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BE42162EF5A00B73254 /* APIClient.swift */; };
@@ -46,6 +45,7 @@
 		A471DFD3215E71B400D6E3BB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A471DFD6215E722B00D6E3BB /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		A471DFD9215E835100D6E3BB /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
+		A474C3D021743C63009E48CE /* nasalization-rg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "nasalization-rg.ttf"; path = "../../../../Downloads/nasalization-free/nasalization-rg.ttf"; sourceTree = "<group>"; };
 		A48127B121039BAE00396E8F /* NASA_Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NASA_Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48127B421039BAE00396E8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A48127B621039BAE00396E8F /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
@@ -72,8 +72,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4BC2BDB2162E99700B73254 /* RxCocoa.framework in Frameworks */,
-				A4BC2BDC2162E99700B73254 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +117,14 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		A474C3CF21743BE0009E48CE /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A474C3D021743C63009E48CE /* nasalization-rg.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		A48127A821039BAE00396E8F = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +149,7 @@
 		A48127B321039BAE00396E8F /* NASA_Application */ = {
 			isa = PBXGroup;
 			children = (
+				A474C3CF21743BE0009E48CE /* Fonts */,
 				A4BC2BDF2162EDDB00B73254 /* Protocol */,
 				A4BC2BD42162E45500B73254 /* Model */,
 				A471DFD5215E720F00D6E3BB /* View */,
@@ -212,6 +219,7 @@
 				A48127AD21039BAE00396E8F /* Sources */,
 				A48127AE21039BAE00396E8F /* Frameworks */,
 				A48127AF21039BAE00396E8F /* Resources */,
+				A43DFE1B217427E400BCF190 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -311,6 +319,7 @@
 			files = (
 				A48127BF21039BAF00396E8F /* LaunchScreen.storyboard in Resources */,
 				A48127BC21039BAF00396E8F /* Assets.xcassets in Resources */,
+				A474C3D121743C63009E48CE /* nasalization-rg.ttf in Resources */,
 				A48127BA21039BAE00396E8F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -330,6 +339,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A43DFE1B217427E400BCF190 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/RxSwift.framework",
+				"$(DERIVED_FILE_DIR)/RxCocoa.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A48127AD21039BAE00396E8F /* Sources */ = {

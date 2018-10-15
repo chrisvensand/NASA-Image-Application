@@ -19,13 +19,13 @@ final class MenuBar: UIView {
     }()
     
     let cellId = "CellId"
-    let imageNames = ["shining", "shining-2", "shining-3"]
+    let imageNames = ["astronaut", "comets", "iss", "saturn"]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         collectionView.register(MenuCell.self, forCellWithReuseIdentifier: cellId)
-        
+        collectionView.isScrollEnabled = false; 
         addSubview(collectionView)
         addConstraintsWithFormat(format: "H:|[v0]|", views: collectionView)
         addConstraintsWithFormat(format: "V:|[v0]|", views: collectionView)
@@ -52,7 +52,7 @@ extension MenuBar: UICollectionViewDataSource, UICollectionViewDelegate, UIColle
     
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
@@ -62,7 +62,7 @@ extension MenuBar: UICollectionViewDataSource, UICollectionViewDelegate, UIColle
     
     func collectionView(_ collectionView: UICollectionView,layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) ->CGSize {
-        return CGSize(width: frame.width / 3, height: frame.height)
+        return CGSize(width: frame.width / 4, height: frame.height)
     }
 }
 
@@ -70,7 +70,7 @@ class MenuCell: BaseCell {
     
     let imageView: UIImageView = {
         let iv = UIImageView()
-        iv.image = UIImage(named: "shining")?.withRenderingMode(.alwaysTemplate)
+        iv.image = UIImage(named: "astronaut")?.withRenderingMode(.alwaysTemplate)
         iv.tintColor = UIColor.nasaBlue()
         return iv
     }()
