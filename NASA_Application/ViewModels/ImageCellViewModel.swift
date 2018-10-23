@@ -15,7 +15,7 @@ protocol ImageCellViewModel {
 struct CoreImageCellViewModel: ImageCellViewModel {
     let image:  UIImage
     
-    init(image: UIImage) {
+    init(with image: UIImage) {
         self.image = image
     }
 }

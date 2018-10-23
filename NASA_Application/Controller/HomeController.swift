@@ -20,18 +20,10 @@ class HomeController: UIViewController, UITableViewDelegate {
     static let startLoadingOffset: CGFloat = 20.0
     
     private var tableView: UITableView!
-    
-    private let apiClient = APIClient()
-    private let disposeBag = DisposeBag()
-    private var images = Array<UIImage>()
+    private var collectionView: UICollectionView!
+    private var searchController = UISearchController(searchResultsController: nil)
     private var searchData = SearchData()
-    private var oldQuery = ""
-    
-    private lazy var searchController: UISearchController = {
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchBar.placeholder = "Search"
-        return searchController
-    }()
+    private var images = Array<UIImage>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,72 +33,72 @@ class HomeController: UIViewController, UITableViewDelegate {
         loadMenuBar()
         loadNavBarButtons()
         loadSearchBar()
-    }
-    
-    private func makeRequest(query: String) {
-        
-        let urlString = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image"
-        
-        guard let url = URL(string: urlString) else {
-            fatalError("die")
-        }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if error != nil {
-                print(error!.localizedDescription)
-            }
-            
-            guard let data = try? Data(contentsOf: url) else {
-                fatalError("no data")
-                
-            }
-            //Implement JSON decoding and paring
-            do {
-                //Decode retrived data with JSONDecoder and assing type of Article object
-                self.searchData = try JSONDecoder().decode(SearchData.self, from: data)
-                
-                //Get back to the main queue
-                DispatchQueue.main.async {
-                    for item in self.searchData.collection.items![...4] {
-                        guard let imgUrl = URL(string: item.links![0].href!) else {
-                            fatalError("no img URL")
-                        }
-                        
-                        guard let imgData = try? Data(contentsOf: imgUrl) else {
-                            fatalError("No img data")
-                        }
-                        
-                        guard let image = UIImage(data: imgData) else {
-                            fatalError("no img")
-                        }
-                        
-                        self.images.append(image)
-                    }
-                }
-            } catch let jsonError {
-                print(jsonError)
-            }
-            
-        }.resume()
 
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        let bag = DisposeBag()
         
-        searchController.searchBar.rx.text.orEmpty
-            .asDriver()
-            .throttle(0.6)
-            .debug()
-            .drive(onNext: { query in
-                print("Made Request")
-                self.makeRequest(query: query)
-                print(self.images)
-                self.tableView.reloadData()
-            })
-            .disposed(by: disposeBag)
+        let searchResults = searchController.searchBar.rx.text.orEmpty
         
+        searchResults.debounce(1, scheduler: MainScheduler.instance)
         
+        searchResults.subscribeOn(MainScheduler.instance)
+        
+        searchResults.subscribe(onNext:{
+            
+            let urlString = "https://images-api.nasa.gov/search?q=" + $0 + "&media_type=image"
+
+            print(urlString)
+
+            guard let url = URL(string: urlString) else {
+                fatalError("URL")
+            }
+            
+            // Retrieve URL data
+            URLSession.shared.dataTask(with: url) { (data, response, error) in
+                if error != nil {
+                    print(error!.localizedDescription)
+                }
+
+                guard let data = try? Data(contentsOf: url) else {
+                    fatalError("No Data")
+                }
+
+                do {
+                    self.searchData = try JSONDecoder().decode(SearchData.self, from: data)
+                } catch let jsonError {
+                    print(jsonError)
+                }
+            }.resume()
+            
+            // Get images from URL data
+            for item in self.searchData.collection.items! {
+                DispatchQueue.main.async {
+                    guard let imgUrl = URL(string: item.links![0].href!) else {
+                        fatalError("no img URL")
+                    }
+
+                    guard let imgData = try? Data(contentsOf: imgUrl) else {
+                        fatalError("No img data")
+                    }
+
+                    guard let image = UIImage(data: imgData) else {
+                        fatalError("no img")
+                    }
+                    
+                    //Create UITableViewCell
+                    let cell = ImageCell()
+                    
+                    cell.configure(with: CoreImageCellViewModel(with: image))
+                    
+                    self.tableView.beginUpdates()
+                    
+                    let indexPath: IndexPath = IndexPath(row: (self.images.count - 1), section: 0)
+                    
+                    self.tableView.insertRows(at: [indexPath], with: .left)
+                    
+                    self.tableView.endUpdates()
+                }
+            }
+        })
     }
     
     let menuBar: MenuBar = {
@@ -115,10 +107,10 @@ class HomeController: UIViewController, UITableViewDelegate {
     }()
     
     private func loadTableView() {
-        tableView.backgroundColor = UIColor.white
-        tableView.register(ImageCell.self, forCellReuseIdentifier: "ImageCell")
-        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView?.backgroundColor = UIColor.white
+        tableView?.register(ImageCell.self, forCellReuseIdentifier: "ImageCell")
+        tableView?.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
     }
     
     private func loadTitleLabel() {
@@ -160,6 +152,7 @@ class HomeController: UIViewController, UITableViewDelegate {
     
     @objc func handleMore() {
         print("top left button")
+        print(searchData)
         //navigationController?.pushViewController(SettingsController, animated: true)
     }
     
@@ -167,27 +160,5 @@ class HomeController: UIViewController, UITableViewDelegate {
         print("top right button")
         //navigationController?.pushViewController(InfoController, animated: true)
     }
-    
-//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return self.images.count
-//    }
-//
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID", for: indexPath) as? ImageCell else {
-//            fatalError("Cant get cell")
-//        }
-//
-//        cell.configure(with: CoreImageCellViewModel(image: self.images[indexPath.row]))
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let height = (view.frame.width - 16 - 16) * 9/16
-//        return CGSize(width: view.frame.width, height: height + 16 + 16)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        return 0
-//    }
     
 }
