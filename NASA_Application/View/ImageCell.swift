@@ -8,9 +8,9 @@
 
 import UIKit
 
-class BaseCell: UICollectionViewCell {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+class BaseCell: UITableViewCell {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
     
@@ -22,12 +22,21 @@ class BaseCell: UICollectionViewCell {
 }
 
 final class ImageCell: BaseCell {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
+    private var viewModel: ImageCellViewModel? {
+        didSet {
+            self.thumbnailImageView.image = viewModel?.image
+        }
     }
     
-    let thumbnailImageView: UIImageView = {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    public func configure(with viewModel: ImageCellViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true

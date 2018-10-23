@@ -10,12 +10,22 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+extension UIScrollView {
+    func isNearBottomEdge(edgeOffset: CGFloat = 20.0) -> Bool {
+        return self.contentOffset.y + self.frame.size.height + edgeOffset > self.contentSize.height
+    }
+}
+
+class HomeController: UIViewController, UITableViewDelegate {
+    static let startLoadingOffset: CGFloat = 20.0
+    
+    private var tableView: UITableView!
     
     private let apiClient = APIClient()
     private let disposeBag = DisposeBag()
-    
-    private var images = BehaviorRelay<[UIImage]>(value: [])
+    private var images = Array<UIImage>()
+    private var searchData = SearchData()
+    private var oldQuery = ""
     
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -26,48 +36,73 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadCollectionView()
+        loadTableView()
         loadTitleLabel()
         loadMenuBar()
         loadNavBarButtons()
         loadSearchBar()
     }
     
-    
     private func makeRequest(query: String) {
-        guard let url = URL(string: "https://images-assets.nasa.gov/image/PIA07081/PIA07081~thumb.jpg") else {
+        
+        let urlString = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image"
+        
+        guard let url = URL(string: urlString) else {
             fatalError("die")
         }
         
-        guard let data = try? Data(contentsOf: url) else {
-            fatalError("no data")
-        }
-        
-        guard let image = UIImage(data: data) else {
-            fatalError("no img")
-        }
-        
-        var old = images.value
-        old.append(image)
-        images.accept(old)
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+            
+            guard let data = try? Data(contentsOf: url) else {
+                fatalError("no data")
+                
+            }
+            //Implement JSON decoding and paring
+            do {
+                //Decode retrived data with JSONDecoder and assing type of Article object
+                self.searchData = try JSONDecoder().decode(SearchData.self, from: data)
+                
+                //Get back to the main queue
+                DispatchQueue.main.async {
+                    for item in self.searchData.collection.items![...4] {
+                        guard let imgUrl = URL(string: item.links![0].href!) else {
+                            fatalError("no img URL")
+                        }
+                        
+                        guard let imgData = try? Data(contentsOf: imgUrl) else {
+                            fatalError("No img data")
+                        }
+                        
+                        guard let image = UIImage(data: imgData) else {
+                            fatalError("no img")
+                        }
+                        
+                        self.images.append(image)
+                    }
+                }
+            } catch let jsonError {
+                print(jsonError)
+            }
+            
+        }.resume()
+
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        images.asDriver()
-            .drive(onNext: { (imgs) in
-                print(imgs.count)
-                self.collectionView.reloadData()
-            })
-            .disposed(by: disposeBag)
-        
         searchController.searchBar.rx.text.orEmpty
             .asDriver()
-            .throttle(0.3)
+            .throttle(0.6)
+            .debug()
             .drive(onNext: { query in
+                print("Made Request")
                 self.makeRequest(query: query)
+                print(self.images)
+                self.tableView.reloadData()
             })
             .disposed(by: disposeBag)
         
@@ -79,11 +114,11 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return mb
     }()
     
-    private func loadCollectionView() {
-        collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(ImageCell.self, forCellWithReuseIdentifier: "CellID")
-        collectionView?.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+    private func loadTableView() {
+        tableView.backgroundColor = UIColor.white
+        tableView.register(ImageCell.self, forCellReuseIdentifier: "ImageCell")
+        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
     }
     
     private func loadTitleLabel() {
@@ -108,55 +143,51 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         view.addConstraintsWithFormat(format: "V:|[v0(50)]", views: menuBar)
     }
     
-    private func callApi(callback: () -> Void) {
-        // do things
-        //im done:
-        callback()
-    }
-    
     private func loadNavBarButtons() {
-        let searchImage = UIImage(named: "information")?.withRenderingMode(.alwaysOriginal)
-        let searchBarButtonItem = UIBarButtonItem(image: searchImage, style: .plain, target: self, action: #selector(handleSearch))
+        let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
         let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
         
         navigationController?.navigationBar.isTranslucent = false
-        navigationItem.rightBarButtonItem = searchBarButtonItem
+        navigationItem.rightBarButtonItem = infoButton
         navigationItem.leftBarButtonItem = moreButton
     }
     
     private func loadSearchBar() {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true;
     }
     
     @objc func handleMore() {
         print("top left button")
+        //navigationController?.pushViewController(SettingsController, animated: true)
     }
     
-    @objc func handleSearch() {
+    @objc func handleInfo() {
         print("top right button")
+        //navigationController?.pushViewController(InfoController, animated: true)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.value.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID", for: indexPath) as? ImageCell else {
-            fatalError("Cant get cell")
-        }
-        
-        cell.thumbnailImageView.image = images.value[indexPath.row]
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = (view.frame.width - 16 - 16) * 9/16
-        return CGSize(width: view.frame.width, height: height + 16 + 16)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
+//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return self.images.count
+//    }
+//
+//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellID", for: indexPath) as? ImageCell else {
+//            fatalError("Cant get cell")
+//        }
+//
+//        cell.configure(with: CoreImageCellViewModel(image: self.images[indexPath.row]))
+//        return cell
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        let height = (view.frame.width - 16 - 16) * 9/16
+//        return CGSize(width: view.frame.width, height: height + 16 + 16)
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        return 0
+//    }
     
 }

@@ -13,14 +13,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         //makes the window the size of the screen
         window = UIWindow(frame: UIScreen.main.bounds)
         
         //assigns ViewController to be the initial view controller
-        window?.rootViewController = UINavigationController(rootViewController: HomeController(collectionViewLayout: UICollectionViewFlowLayout()))
+        window?.rootViewController = UINavigationController(rootViewController: HomeController())
         
         //presents the window
         window?.makeKeyAndVisible()
