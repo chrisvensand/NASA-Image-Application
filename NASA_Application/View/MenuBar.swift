@@ -10,6 +10,9 @@ import UIKit
 
 final class MenuBar: UIView {
     
+    let cellId = "CellId"
+    let imageNames = ["astronaut", "comets", "iss", "saturn"]
+    
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -17,9 +20,6 @@ final class MenuBar: UIView {
         cv.delegate = self
         return cv
     }()
-    
-    let cellId = "CellId"
-    let imageNames = ["astronaut", "comets", "iss", "saturn"]
     
     override init(frame: CGRect) {
         super.init(frame: frame)

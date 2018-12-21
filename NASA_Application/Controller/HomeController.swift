@@ -7,98 +7,29 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
-
-extension UIScrollView {
-    func isNearBottomEdge(edgeOffset: CGFloat = 20.0) -> Bool {
-        return self.contentOffset.y + self.frame.size.height + edgeOffset > self.contentSize.height
-    }
-}
 
 class HomeController: UIViewController, UITableViewDelegate {
-    static let startLoadingOffset: CGFloat = 20.0
-    
-    private var tableView: UITableView!
-    private var collectionView: UICollectionView!
-    private var searchController = UISearchController(searchResultsController: nil)
+    private static let startLoadingOffset: CGFloat = 20.0
+    fileprivate let cellID = "ImageCell.Reuse"
+    private let decoder = JSONDecoder()
+    private var imgURLs = [String]()
+
     private var searchData = SearchData()
-    private var images = Array<UIImage>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadTableView()
-        loadTitleLabel()
+        self.view.addSubview(self.tableView)
+        self.tableView.rowHeight = 80
+        
+        // register
+        // self.tableView.register(CoreImageCellViewModel.self, forCellReuseIdentifier: cellID)
+        self.tableView.refreshControl = refreshControl
+        
         loadMenuBar()
         loadNavBarButtons()
-        loadSearchBar()
-
-        let bag = DisposeBag()
         
-        let searchResults = searchController.searchBar.rx.text.orEmpty
-        
-        searchResults.debounce(1, scheduler: MainScheduler.instance)
-        
-        searchResults.subscribeOn(MainScheduler.instance)
-        
-        searchResults.subscribe(onNext:{
-            
-            let urlString = "https://images-api.nasa.gov/search?q=" + $0 + "&media_type=image"
-
-            print(urlString)
-
-            guard let url = URL(string: urlString) else {
-                fatalError("URL")
-            }
-            
-            // Retrieve URL data
-            URLSession.shared.dataTask(with: url) { (data, response, error) in
-                if error != nil {
-                    print(error!.localizedDescription)
-                }
-
-                guard let data = try? Data(contentsOf: url) else {
-                    fatalError("No Data")
-                }
-
-                do {
-                    self.searchData = try JSONDecoder().decode(SearchData.self, from: data)
-                } catch let jsonError {
-                    print(jsonError)
-                }
-            }.resume()
-            
-            // Get images from URL data
-            for item in self.searchData.collection.items! {
-                DispatchQueue.main.async {
-                    guard let imgUrl = URL(string: item.links![0].href!) else {
-                        fatalError("no img URL")
-                    }
-
-                    guard let imgData = try? Data(contentsOf: imgUrl) else {
-                        fatalError("No img data")
-                    }
-
-                    guard let image = UIImage(data: imgData) else {
-                        fatalError("no img")
-                    }
-                    
-                    //Create UITableViewCell
-                    let cell = ImageCell()
-                    
-                    cell.configure(with: CoreImageCellViewModel(with: image))
-                    
-                    self.tableView.beginUpdates()
-                    
-                    let indexPath: IndexPath = IndexPath(row: (self.images.count - 1), section: 0)
-                    
-                    self.tableView.insertRows(at: [indexPath], with: .left)
-                    
-                    self.tableView.endUpdates()
-                }
-            }
-        })
+        //fetchData(query: "Comet")
     }
     
     let menuBar: MenuBar = {
@@ -106,28 +37,128 @@ class HomeController: UIViewController, UITableViewDelegate {
         return mb
     }()
     
-    private func loadTableView() {
-        tableView?.backgroundColor = UIColor.white
-        tableView?.register(ImageCell.self, forCellReuseIdentifier: "ImageCell")
-        tableView?.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+    // MARK: - Helpers
+    
+    private func fetchData(query: String, completion: (() -> Void)? = nil) {
+        let urlString = "https://images-api.nasa.gov/" + query
+        guard let url = URL(string: urlString) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data else {
+                if let error = error {
+                    print("error \(error.localizedDescription)")
+                } else {
+                    print("Unknown error")
+                }
+                self.showErrorAlert(query: query)
+                completion?()
+                return
+            }
+            
+            guard let newSearchData = try? JSONDecoder().decode(SearchData.self, from: data) else {
+                print("unable to decode data")
+                self.showErrorAlert(query: query)
+                completion?()
+                return
+            }
+            
+            // clear old imgURLs if there is a new search
+            self.imgURLs = [String]()
+            for item in newSearchData.items {
+                imgUrls.append(item.href)
+            }
+            
+            self.searchData = newSearchData
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                completion?()
+            }
+        }.resume()
     }
     
-    private func loadTitleLabel() {
+    private func showErrorAlert(query: String) {
+        DispatchQueue.main.async {
+            let controller = UIAlertController(title: "Error fetching data", message: nil, preferredStyle: .alert)
+            let action = UIAlertAction(title: "Retry", style: .default, handler: { _ in
+                self.fetchData(query: query)
+            })
+            controller.addAction(action)
+            self.present(controller, animated: true, completion: nil)
+        }
+    }
+    
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(self.handleRefresh), for: UIControl.Event.valueChanged)
+        return control
+    }()
+    
+    @objc private func handleRefresh() {
+        fetchData(query: "searchController.text") { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshControl.endRefreshing()
+            }
+        }
+    }
+    
+    
+    // MARK: - Table view setup
+    
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        
+        tableView.delegate = self
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        tableView.backgroundColor = UIColor.white
+        tableView.register(ImageCell.self, forCellReuseIdentifier: cellID)
+        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        
+        return tableView
+    }()
+
+    // MARK: - Title label setup
+    
+    private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: view.frame.height))
         titleLabel.text = "NASA Images"
         titleLabel.textColor = UIColor.black
-        guard let customFont = UIFont(name: "NasalizationRg-Regular", size: UIFont.labelFontSize) else {
-            fatalError("""
-        Failed to load the "NasalizationRg-Regular" font.
-        Make sure the font file is included in the project and the font name is spelled correctly.
-        """
-            )
-        }
-        titleLabel.font = UIFontMetrics.default.scaledFont(for: customFont)
+//        guard let customFont = UIFont(name: "NasalizationRg-Regular", size: UIFont.labelFontSize) else {
+//            fatalError("""
+//        Failed to load the "NasalizationRg-Regular" font.
+//        Make sure the font file is included in the project and the font name is spelled correctly.
+//        """
+//            )
+//        }
+//        titleLabel.font = UIFontMetrics.default.scaledFont(for: customFont)
         titleLabel.adjustsFontForContentSizeCategory = true
-        navigationItem.titleView = titleLabel
-    }
+        
+        return titleLabel
+    }()
+
+    // MARK: - Collection view setup
+    
+    private lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView()
+        
+        // Place to add code if someone wants to change the collection view
+        
+        return collectionView
+    }()
+    
+    // MARK: - Search controller setup
+    
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true;
+        
+        return searchController
+    }()
     
     private func loadMenuBar() {
         view.addSubview(menuBar)
@@ -137,28 +168,53 @@ class HomeController: UIViewController, UITableViewDelegate {
     
     private func loadNavBarButtons() {
         let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
-        let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleMore))
+        let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
         
+        //navigation bar settings
+        UINavigationBar.appearance().barTintColor = UIColor.white
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.isTranslucent = false
+        navigationItem.titleView = titleLabel
         navigationItem.rightBarButtonItem = infoButton
         navigationItem.leftBarButtonItem = moreButton
     }
     
-    private func loadSearchBar() {
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true;
-    }
-    
-    @objc func handleMore() {
+    // MARK: - Settings button
+    @objc func handleSettings() {
         print("top left button")
         print(searchData)
         //navigationController?.pushViewController(SettingsController, animated: true)
     }
     
+    // MARK: - Info button
     @objc func handleInfo() {
         print("top right button")
         //navigationController?.pushViewController(InfoController, animated: true)
     }
     
+}
+
+extension UIScrollView {
+    func isNearBottomEdge(edgeOffset: CGFloat = 20.0) -> Bool {
+        return self.contentOffset.y + self.frame.size.height + edgeOffset > self.contentSize.height
+    }
+}
+
+extension HomeController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 20
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? CoreImageCellViewModel else {
+            return UITableViewCell()
+        }
+        
+        cell.setImage(imgURL: imgURLs[indexPath.row])
+        return cell
+    }
 }

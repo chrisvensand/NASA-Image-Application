@@ -24,11 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //presents the window
         window?.makeKeyAndVisible()
         
-        //navigation bar settings
-        UINavigationBar.appearance().barTintColor = UIColor.white
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        
-        
         return true
     }
 

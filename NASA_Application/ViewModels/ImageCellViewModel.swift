@@ -12,11 +12,17 @@ protocol ImageCellViewModel {
     var image: UIImage { get }
 }
 
-struct CoreImageCellViewModel: ImageCellViewModel {
+final class CoreImageCellViewModel: ImageCellViewModel {
     let image:  UIImage
     
     init(with image: UIImage) {
         self.image = image
     }
-}
+    
+    // MARK: API
+    
+    public func setImage(imgURL: String) {
+        image.image .
+    }
 
+}

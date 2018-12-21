@@ -6,29 +6,58 @@
 //  Copyright © 2018 Christopher Vensand. All rights reserved.
 //
 
+import UIKit
 import Foundation
-import RxSwift
 
-class APIClient {
-    private let baseURL = URL(string: "https://images-api.nasa.gov/")!
+final class APIClient {
+    private let baseURL: String = "https://images-api.nasa.gov/"
     
-    func send<T: Codable>(apiRequest: APIRequest) -> Observable<T> {
-        return Observable<T>.create { observer in
-            let request = apiRequest.request(with: self.baseURL)
-            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-                do {
-                    let model: T = try JSONDecoder().decode(T.self, from: data ?? Data())
-                    observer.onNext(model)
-                } catch let error {
-                    observer.onError(error)
+    private func fetchData(query: String, completion: (() -> Void)? = nil) {
+        let urlString = baseURL + query
+        guard let url = URL(string: urlString) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data else {
+                if let error = error {
+                    print("error \(error.localizedDescription)")
+                } else {
+                    print("Unknown error")
                 }
-                observer.onCompleted()
+                self.showErrorAlert(query: query)
+                completion?()
+                return
             }
-            task.resume()
             
-            return Disposables.create {
-                task.cancel()
+            guard let data = try? JSONDecoder().decode(SearchData.self, from: data) else {
+                print("unable to decode data")
+                self.showErrorAlert(query: query)
+                completion?()
+                return
             }
+            
+            self?.sites = siteData.sites.sorted { $0.name < $1.name }
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+                completion?()
+            }
+        }.resume()
+        
+        
+            
+    }
+    
+    private func showErrorAlert(query: String) {
+        DispatchQueue.main.async {
+            let controller = UIAlertController(title: "Error fetching data", message: nil, preferredStyle: .alert)
+            let action = UIAlertAction(title: "Retry", style: .default, handler: { _ in
+                self.fetchData(query: query)
+            })
+            controller.addAction(action)
+            self.present(controller, animated: true, completion: nil)
         }
     }
+        
 }
+    
+
