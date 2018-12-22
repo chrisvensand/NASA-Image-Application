@@ -26,16 +26,10 @@ class HomeController: UIViewController, UITableViewDelegate {
         // self.tableView.register(CoreImageCellViewModel.self, forCellReuseIdentifier: cellID)
         self.tableView.refreshControl = refreshControl
         
-        loadMenuBar()
         loadNavBarButtons()
         
         //fetchData(query: "Comet")
     }
-    
-    let menuBar: MenuBar = {
-        let mb = MenuBar()
-        return mb
-    }()
     
     // MARK: - Helpers
     
@@ -64,9 +58,9 @@ class HomeController: UIViewController, UITableViewDelegate {
             
             // clear old imgURLs if there is a new search
             self.imgURLs = [String]()
-            for item in newSearchData.items {
-                imgUrls.append(item.href)
-            }
+//            for item in newSearchData->items {
+//                imgUrls.append(item.href)
+//            }
             
             self.searchData = newSearchData
             
@@ -160,12 +154,6 @@ class HomeController: UIViewController, UITableViewDelegate {
         return searchController
     }()
     
-    private func loadMenuBar() {
-        view.addSubview(menuBar)
-        view.addConstraintsWithFormat(format: "H:|[v0]|", views: menuBar)
-        view.addConstraintsWithFormat(format: "V:|[v0(50)]", views: menuBar)
-    }
-    
     private func loadNavBarButtons() {
         let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
         let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
@@ -206,7 +194,7 @@ extension HomeController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+        return 10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -215,6 +203,6 @@ extension HomeController: UITableViewDataSource {
         }
         
         cell.setImage(imgURL: imgURLs[indexPath.row])
-        return cell
+        return ImageCell()
     }
 }
