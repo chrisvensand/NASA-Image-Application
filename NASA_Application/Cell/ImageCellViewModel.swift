@@ -11,21 +11,43 @@ import UIKit
 final class ImageTableViewCell: UITableViewCell {
     
     var cellImage: UIImage? = UIImage(named: "defaultImage")
+    
+    // MARK: - Helpers
+    
     func setImage(imgURL: String) {
         
-        DispatchQueue.global(qos: .utility).async {
-            self.getSetImg(URL: imgURL, cell: cellImage){ [weak self] (imgURL, cellImage) in
-                
-            }
+        guard let url = URL(string: imgURL) else {
+            print("Cannot create URL from: \(imgURL)")
+            return
         }
+        
+        let request = URLRequest(url: url)
+        
+        fetchImage(request)
         
     }
     
-    func getSetImg(URL imgURL: String, cell: UIImage, setImg: @escaping (UIImage) -> ()) {
+    private func fetchImage(_ request: URLRequest) {
         
-        DispatchQueue.global(qos: .utility).async {
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let data = data else {
+                if let error = error {
+                    print("error \(error.localizedDescription)")
+                } else {
+                    print("Unknown error")
+                }
+                return
+            }
             
-        }
+            guard let cellImage = UIImage(data: data) else {
+                print("Unable to create UIImage")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.cellImage = cellImage
+            }
+        }.resume()
     }
     
 }

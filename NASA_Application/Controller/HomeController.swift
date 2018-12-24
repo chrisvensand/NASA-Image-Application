@@ -106,7 +106,7 @@ class HomeController: UIViewController, UITableViewDelegate {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         tableView.backgroundColor = UIColor.white
-        tableView.register(ImageCell.self, forCellReuseIdentifier: cellID)
+        tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
         tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         
@@ -198,11 +198,11 @@ extension HomeController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? CoreImageCellViewModel else {
+        guard let cell = self.tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? ImageTableViewCell else {
             return UITableViewCell()
         }
         
         cell.setImage(imgURL: imgURLs[indexPath.row])
-        return ImageCell()
+        return cell
     }
 }
