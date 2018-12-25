@@ -16,6 +16,9 @@
 		A48127BF21039BAF00396E8F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48127BD21039BAF00396E8F /* LaunchScreen.storyboard */; };
 		A48127CA21039BAF00396E8F /* NASA_ApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127C921039BAF00396E8F /* NASA_ApplicationTests.swift */; };
 		A48127D521039BAF00396E8F /* NASA_ApplicationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127D421039BAF00396E8F /* NASA_ApplicationUITests.swift */; };
+		A4B9FD0021D1937A00F6E4D7 /* nasalization.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B9FCFF21D1937A00F6E4D7 /* nasalization.ttf */; };
+		A4B9FD0121D193C500F6E4D7 /* nasalization.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B9FCFF21D1937A00F6E4D7 /* nasalization.ttf */; };
+		A4B9FD0221D193C500F6E4D7 /* nasalization.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4B9FCFF21D1937A00F6E4D7 /* nasalization.ttf */; };
 		A4BC2BD62162E46A00B73254 /* SearchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4BC2BD52162E46A00B73254 /* SearchData.swift */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +55,7 @@
 		A48127D021039BAF00396E8F /* NASA_ApplicationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NASA_ApplicationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48127D421039BAF00396E8F /* NASA_ApplicationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASA_ApplicationUITests.swift; sourceTree = "<group>"; };
 		A48127D621039BAF00396E8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A4B9FCFF21D1937A00F6E4D7 /* nasalization.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = nasalization.ttf; path = NASA_Application/Fonts/nasalization.ttf; sourceTree = SOURCE_ROOT; };
 		A4BC2BD52162E46A00B73254 /* SearchData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchData.swift; sourceTree = "<group>"; };
 		A4BC2BD92162E99700B73254 /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = "<group>"; };
 		A4BC2BDA2162E99700B73254 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
@@ -109,6 +113,7 @@
 		A474C3CF21743BE0009E48CE /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				A4B9FCFF21D1937A00F6E4D7 /* nasalization.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -296,6 +301,7 @@
 			files = (
 				A48127BF21039BAF00396E8F /* LaunchScreen.storyboard in Resources */,
 				A48127BC21039BAF00396E8F /* Assets.xcassets in Resources */,
+				A4B9FD0021D1937A00F6E4D7 /* nasalization.ttf in Resources */,
 				A48127BA21039BAE00396E8F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4B9FD0121D193C500F6E4D7 /* nasalization.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +318,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4B9FD0221D193C500F6E4D7 /* nasalization.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

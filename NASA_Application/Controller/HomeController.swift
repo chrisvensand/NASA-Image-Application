@@ -13,20 +13,20 @@ class HomeController: UIViewController, UITableViewDelegate {
     fileprivate let cellID = "ImageCell.Reuse"
     private let decoder = JSONDecoder()
     private var imgURLs = [String]()
-
     private var searchData = SearchData()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         self.view.addSubview(self.tableView)
         self.tableView.rowHeight = 80
         
         // register
-        // self.tableView.register(CoreImageCellViewModel.self, forCellReuseIdentifier: cellID)
+        self.tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
         self.tableView.refreshControl = refreshControl
         
-        loadNavBarButtons()
+        createBarButtons()
         
         //fetchData(query: "Comet")
     }
@@ -34,8 +34,11 @@ class HomeController: UIViewController, UITableViewDelegate {
     // MARK: - Helpers
     
     private func fetchData(query: String, completion: (() -> Void)? = nil) {
-        let urlString = "https://images-api.nasa.gov/" + query
-        guard let url = URL(string: urlString) else { return }
+        let urlString = "https://images-api.nasa.gov/search?q=" + query
+        guard let url = URL(string: urlString) else {
+            print("Unable to to create URL from: \(urlString)")
+            return
+        }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard let data = data else {
@@ -55,12 +58,6 @@ class HomeController: UIViewController, UITableViewDelegate {
                 completion?()
                 return
             }
-            
-            // clear old imgURLs if there is a new search
-            self.imgURLs = [String]()
-//            for item in newSearchData->items {
-//                imgUrls.append(item.href)
-//            }
             
             self.searchData = newSearchData
             
@@ -101,60 +98,44 @@ class HomeController: UIViewController, UITableViewDelegate {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        
+        setUpTableView(name: tableView)
+        return tableView
+    }()
+    
+    private func setUpTableView(name tableView: UITableView) {
         tableView.delegate = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        
         tableView.backgroundColor = UIColor.white
         tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
         tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        
-        return tableView
-    }()
+    }
 
     // MARK: - Title label setup
     
     private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: view.frame.height))
-        titleLabel.text = "NASA Images"
-        titleLabel.textColor = UIColor.black
-//        guard let customFont = UIFont(name: "NasalizationRg-Regular", size: UIFont.labelFontSize) else {
-//            fatalError("""
-//        Failed to load the "NasalizationRg-Regular" font.
-//        Make sure the font file is included in the project and the font name is spelled correctly.
-//        """
-//            )
-//        }
-//        titleLabel.font = UIFontMetrics.default.scaledFont(for: customFont)
-        titleLabel.adjustsFontForContentSizeCategory = true
-        
+        setUpTitleLabel(name: titleLabel)
         return titleLabel
     }()
-
-    // MARK: - Collection view setup
     
-    private lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView()
-        
-        // Place to add code if someone wants to change the collection view
-        
-        return collectionView
-    }()
+    private func setUpTitleLabel(name titleLabel: UILabel) {
+        titleLabel.text = "NASA Images"
+        titleLabel.textColor = UIColor.black
+        guard let customFont = UIFont(name: "nasalization", size: UIFont.labelFontSize) else {
+            fatalError("""
+        Failed to load the "nasalization-rg" font.
+        Make sure the font file is included in the project and the font name is spelled correctly.
+        """
+            )
+        }
+        titleLabel.font = UIFontMetrics.default.scaledFont(for: customFont)
+        titleLabel.adjustsFontForContentSizeCategory = true
+    }
     
-    // MARK: - Search controller setup
+    // MARK: - Bar Buttons setup
     
-    private lazy var searchController: UISearchController = {
-        let searchController = UISearchController(searchResultsController: nil)
-        
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true;
-        
-        return searchController
-    }()
-    
-    private func loadNavBarButtons() {
+    private func createBarButtons() {
         let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
         let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
         
@@ -177,9 +158,9 @@ class HomeController: UIViewController, UITableViewDelegate {
     // MARK: - Info button
     @objc func handleInfo() {
         print("top right button")
+        print(searchData)
         //navigationController?.pushViewController(InfoController, animated: true)
     }
-    
 }
 
 extension UIScrollView {
@@ -203,6 +184,8 @@ extension HomeController: UITableViewDataSource {
         }
         
         cell.setImage(imgURL: imgURLs[indexPath.row])
+        cell.backgroundColor = UIColor.white
         return cell
     }
 }
+
