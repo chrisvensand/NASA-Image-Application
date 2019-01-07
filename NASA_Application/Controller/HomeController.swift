@@ -11,6 +11,7 @@ import UIKit
 class HomeController: UIViewController, UITableViewDelegate {
     private static let startLoadingOffset: CGFloat = 20.0
     fileprivate let cellID = "ImageCell.Reuse"
+    private let searchController = UISearchController(searchResultsController: nil)
     private let decoder = JSONDecoder()
     private var imgURLs = [String]()
     private var searchData = SearchData()
@@ -18,15 +19,8 @@ class HomeController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        self.view.addSubview(self.tableView)
-        self.tableView.rowHeight = 80
-        
-        // register
-        self.tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
-        self.tableView.refreshControl = refreshControl
-        
-        createBarButtons()
+        setupNavigationBar()
+        setupTableView()
         
         //fetchData(query: "Comet")
     }
@@ -98,18 +92,8 @@ class HomeController: UIViewController, UITableViewDelegate {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        setUpTableView(name: tableView)
         return tableView
     }()
-    
-    private func setUpTableView(name tableView: UITableView) {
-        tableView.delegate = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor.white
-        tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
-        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-    }
 
     // MARK: - Title label setup
     
@@ -133,19 +117,43 @@ class HomeController: UIViewController, UITableViewDelegate {
         titleLabel.adjustsFontForContentSizeCategory = true
     }
     
-    // MARK: - Bar Buttons setup
+    // MARK: - Navigation bar setup
     
-    private func createBarButtons() {
+    private func setupNavigationBar() {
+        
+        // Create and add bar buttons
         let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
         let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
-        
-        //navigation bar settings
-        UINavigationBar.appearance().barTintColor = UIColor.white
-        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.isTranslucent = false
-        navigationItem.titleView = titleLabel
         navigationItem.rightBarButtonItem = infoButton
         navigationItem.leftBarButtonItem = moreButton
+        
+        
+        // Search Controller setup
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.definesPresentationContext = true
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        // UI settings
+        UINavigationBar.appearance().barTintColor = UIColor.white
+        navigationController?.navigationBar.isTranslucent = false
+        navigationItem.titleView = titleLabel
+        
+    }
+    
+    // MARK: - TableView setup
+    
+    private func setupTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = UIColor.white
+        tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
+        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        
+        self.view.addSubview(tableView)
     }
     
     // MARK: - Settings button
@@ -186,6 +194,13 @@ extension HomeController: UITableViewDataSource {
         cell.setImage(imgURL: imgURLs[indexPath.row])
         cell.backgroundColor = UIColor.white
         return cell
+    }
+}
+
+extension HomeController: UISearchResultsUpdating {
+    // Mark: - UISearchResultsUpdating Delegate
+    func updateSearchResults(for searchController: UISearchController) {
+        // TODO
     }
 }
 
