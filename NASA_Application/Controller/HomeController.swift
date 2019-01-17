@@ -19,8 +19,7 @@ class HomeController: UIViewController, UITableViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
-        setupTableView()
+        setupUI()
         
         //fetchData(query: "Comet")
     }
@@ -28,7 +27,7 @@ class HomeController: UIViewController, UITableViewDelegate {
     // MARK: - Helpers
     
     private func fetchData(query: String, completion: (() -> Void)? = nil) {
-        let urlString = "https://images-api.nasa.gov/search?q=" + query
+        let urlString = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image"
         guard let url = URL(string: urlString) else {
             print("Unable to to create URL from: \(urlString)")
             return
@@ -87,11 +86,53 @@ class HomeController: UIViewController, UITableViewDelegate {
         }
     }
     
+    // MARK: - UI Setup
     
-    // MARK: - Table view setup
+    private func setupUI(){
+        setupNavigationBar()
+        self.view.addSubview(tableView)
+        self.view.backgroundColor = .white
+        NSLayoutConstraint.activate([
+                                    tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor),
+                                    tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor),
+                                    tableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+                                    tableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+                                    ])
+    }
+    
+    private func setupNavigationBar() {
+        // Create and add bar buttons
+        let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal),style: .plain, target: self, action: #selector(handleInfo))
+        let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
+        navigationItem.rightBarButtonItem = infoButton
+        navigationItem.leftBarButtonItem = moreButton
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        
+        // Search Controller setup
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.definesPresentationContext = true
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        // UI settings
+        UINavigationBar.appearance().barTintColor = UIColor.white
+        navigationController?.navigationBar.isTranslucent = false
+        navigationItem.titleView = titleLabel
+    }
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = UIColor.white
+        tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
+        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
+        
         return tableView
     }()
 
@@ -117,45 +158,6 @@ class HomeController: UIViewController, UITableViewDelegate {
         titleLabel.adjustsFontForContentSizeCategory = true
     }
     
-    // MARK: - Navigation bar setup
-    
-    private func setupNavigationBar() {
-        
-        // Create and add bar buttons
-        let infoButton = UIBarButtonItem(image: UIImage(named: "information")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleInfo))
-        let moreButton = UIBarButtonItem(image: UIImage(named: "settings")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleSettings))
-        navigationItem.rightBarButtonItem = infoButton
-        navigationItem.leftBarButtonItem = moreButton
-        
-        
-        // Search Controller setup
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.definesPresentationContext = true
-        navigationItem.searchController = searchController
-        definesPresentationContext = true
-        
-        // UI settings
-        UINavigationBar.appearance().barTintColor = UIColor.white
-        navigationController?.navigationBar.isTranslucent = false
-        navigationItem.titleView = titleLabel
-        
-    }
-    
-    // MARK: - TableView setup
-    
-    private func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = UIColor.white
-        tableView.register(ImageTableViewCell.self, forCellReuseIdentifier: cellID)
-        tableView.contentInset = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 50, left: 0, bottom: 0, right: 0)
-        
-        self.view.addSubview(tableView)
-    }
-    
     // MARK: - Settings button
     @objc func handleSettings() {
         print("top left button")
@@ -178,29 +180,36 @@ extension UIScrollView {
 }
 
 extension HomeController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
+    }
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return searchData.collection.items?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = self.tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? ImageTableViewCell else {
             return UITableViewCell()
         }
-        
-        cell.setImage(imgURL: imgURLs[indexPath.row])
+
+        cell.setImage(imgURL: searchData.collection.items?[indexPath.row].links?.first?.href ?? "")
         cell.backgroundColor = UIColor.white
         return cell
     }
 }
 
-extension HomeController: UISearchResultsUpdating {
-    // Mark: - UISearchResultsUpdating Delegate
-    func updateSearchResults(for searchController: UISearchController) {
-        // TODO
+extension HomeController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let searchText = searchBar.text else {
+            return
+        }
+        fetchData(query: searchText)
     }
+    
 }
 
