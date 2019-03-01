@@ -18,13 +18,15 @@ final class ImageTableViewCell: UITableViewCell {
         self.contentView.addSubview(imgView)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.imgView.translatesAutoresizingMaskIntoConstraints = false
-        self.imgView.contentMode = .scaleAspectFill
+        self.imgView.contentMode = .scaleAspectFit
         
         NSLayoutConstraint.activate([
                                     imgView.leftAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leftAnchor, constant: 10.0),
                                     imgView.rightAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.rightAnchor, constant: 10.0),
                                     imgView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 10.0),
-                                    imgView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: 10.0)
+                                    imgView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: 10.0),
+                                    imgView.widthAnchor.constraint(equalToConstant: 600),
+                                    imgView.heightAnchor.constraint(equalToConstant: 400)
                                     ])
     }
     
@@ -47,7 +49,13 @@ final class ImageTableViewCell: UITableViewCell {
             }
             
             DispatchQueue.main.async { [weak self] in
-                self?.imgView.image = UIImage(data: data)
+                guard let view = self?.imgView else {
+                    return
+                }
+                guard let image = UIImage(data: data) else {
+                    return
+                }
+                view.image = image
             }
         }
         

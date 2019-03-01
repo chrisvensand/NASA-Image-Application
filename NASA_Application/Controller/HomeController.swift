@@ -21,7 +21,7 @@ class HomeController: UIViewController, UITableViewDelegate {
         
         setupUI()
         
-        //fetchData(query: "Comet")
+        fetchData(query: "Galaxy")
     }
     
     // MARK: - Helpers
