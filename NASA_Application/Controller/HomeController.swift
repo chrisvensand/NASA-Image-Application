@@ -27,7 +27,14 @@ class HomeController: UIViewController, UITableViewDelegate {
     // MARK: - Helpers
     
     private func fetchData(query: String, completion: (() -> Void)? = nil) {
-        let urlString = "https://images-api.nasa.gov/search?q=" + query + "&media_type=image"
+        guard let escapedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
+            else {
+                print("ERROR: Could not encode search query")
+                self.showErrorAlert(query: query)
+                completion?()
+                return
+        }
+        let urlString = "https://images-api.nasa.gov/search?q=" + escapedQuery + "&media_type=image"
         guard let url = URL(string: urlString) else {
             print("Unable to to create URL from: \(urlString)")
             return

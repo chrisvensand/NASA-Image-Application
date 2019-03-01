@@ -53,27 +53,4 @@ final class ImageTableViewCell: UITableViewCell {
         
     }
     
-//    private func fetchImage(_ request: URLRequest) {
-//
-//        URLSession.shared.dataTask(with: request) { (data, response, error) in
-//            guard let data = data else {
-//                if let error = error {
-//                    print("error \(error.localizedDescription)")
-//                } else {
-//                    print("Unknown error")
-//                }
-//                return
-//            }
-//            
-//            guard let cellImage = UIImage(data: data) else {
-//                print("Unable to create UIImage")
-//                return
-//            }
-//
-//            DispatchQueue.main.async {
-//                self.cellImage = cellImage
-//            }
-//        }.resume()
-//    }
-    
 }

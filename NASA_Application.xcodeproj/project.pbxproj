@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A4196E0F217D28CA00F4071D /* ImageCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4196E0E217D28CA00F4071D /* ImageCellViewModel.swift */; };
+		A4196E0F217D28CA00F4071D /* ImageTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4196E0E217D28CA00F4071D /* ImageTableViewModel.swift */; };
 		A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A471DFD3215E71B400D6E3BB /* Extensions.swift */; };
 		A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B421039BAE00396E8F /* AppDelegate.swift */; };
 		A48127B721039BAE00396E8F /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48127B621039BAE00396E8F /* HomeController.swift */; };
@@ -40,7 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A4196E0E217D28CA00F4071D /* ImageCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCellViewModel.swift; sourceTree = "<group>"; };
+		A4196E0E217D28CA00F4071D /* ImageTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewModel.swift; sourceTree = "<group>"; };
 		A471DFD3215E71B400D6E3BB /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A48127B121039BAE00396E8F /* NASA_Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NASA_Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48127B421039BAE00396E8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 		A4196E0D217D289E00F4071D /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				A4196E0E217D28CA00F4071D /* ImageCellViewModel.swift */,
+				A4196E0E217D28CA00F4071D /* ImageTableViewModel.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -354,7 +354,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A48127B721039BAE00396E8F /* HomeController.swift in Sources */,
-				A4196E0F217D28CA00F4071D /* ImageCellViewModel.swift in Sources */,
+				A4196E0F217D28CA00F4071D /* ImageTableViewModel.swift in Sources */,
 				A4BC2BD62162E46A00B73254 /* SearchData.swift in Sources */,
 				A471DFD4215E71B400D6E3BB /* Extensions.swift in Sources */,
 				A48127B521039BAE00396E8F /* AppDelegate.swift in Sources */,
